@@ -1,2 +1,7 @@
 # github-actions
-Internal Github actions for Shlink repositories
+
+Internal Github workflows for Shlink repositories.
+
+## Available workflows:
+
+* php-lib-ci: Continuous integration for PHP libraries.
