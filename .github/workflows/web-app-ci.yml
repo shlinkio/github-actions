@@ -1,0 +1,79 @@
+name: Continuous integration - Web app
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        required: true
+        description: 'NodeJS version to use'
+      with-mutation-tests:
+        type: boolean
+        required: false
+        default: false
+        description: 'Tells if mutation tests should be run'
+      publish-coverage:
+        type: boolean
+        required: false
+        default: false
+        description: 'Tells if code coverage should be published in codecov after running unit tests'
+
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Use node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ inputs.node-version }}
+      - run: npm ci
+      - run: npm run lint
+
+  unit-tests:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Use node.js 14.15
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ inputs.node-version }}
+      - run: npm ci
+      - run: npm run test:ci
+      - name: Publish coverage
+        if: ${{ inputs.publish-coverage }}
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage/clover.xml
+
+  mutation-tests:
+    runs-on: ubuntu-20.04
+    continue-on-error: true
+    if: ${{ inputs.with-mutation-tests }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # needed so that the main branch is also fetched
+      - name: Use node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ inputs.node-version }}
+      - run: npm ci
+      - run: npm run mutate -- --mutate=$(git diff origin/main --name-only | grep -E 'src\/(.*).(ts|tsx)$' | paste -sd ",")
+
+  build-docker-image:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: marceloprado/has-changed-path@v1
+        id: changed-dockerfile
+        with:
+          paths: ./Dockerfile
+      - if: ${{ steps.changed-dockerfile.outputs.changed == 'true' }}
+        run: docker build -t shlink-website:test .
+      - if: ${{ steps.changed-dockerfile.outputs.changed != 'true' }}
+        run: echo "Dockerfile didn't change. Skipped"
