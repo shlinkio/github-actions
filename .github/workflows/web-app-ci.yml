@@ -12,6 +12,11 @@ on:
         required: false
         default: false
         description: 'Tells if mutation tests should be run'
+      with-unit-tests:
+        type: boolean
+        required: false
+        default: true
+        description: 'Tells if unit tests should be run'
       publish-coverage:
         type: boolean
         required: false
@@ -33,6 +38,7 @@ jobs:
 
   unit-tests:
     runs-on: ubuntu-20.04
+    if: ${{ inputs.with-unit-tests }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
