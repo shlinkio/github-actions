@@ -68,7 +68,7 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
       - run: npm ci
-      - run: npm run mutate -- --mutate=$(git diff origin/main --name-only | grep -E 'src\/(.*).(ts|tsx)$' | paste -sd ",")
+      - run: npm run mutate -- --mutate=$(git diff ${GITHUB_BASE_REF:-origin/main} --name-only | grep -E 'src\/(.*).(ts|tsx)$' | paste -sd ",")
 
   build-docker-image:
     runs-on: ubuntu-20.04
