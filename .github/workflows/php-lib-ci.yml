@@ -8,6 +8,10 @@ on:
         required: false
         default: ''
         description: 'Extra PHP Extensions to install, besides the default ones'
+    secrets:
+      INFECTION_BADGE_API_KEY:
+        required: false
+        description: 'If provided, it will be used to publish the mutation score in Stryker dashboard'
 
 jobs:
   lint:
@@ -91,6 +95,8 @@ jobs:
           name: build-${{ matrix.php-version }}
           path: build
       - run: composer infect:ci
+        env:
+          INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
 
   upload-coverage:
     needs:
