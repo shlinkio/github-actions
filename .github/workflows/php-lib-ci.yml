@@ -14,29 +14,12 @@ on:
         description: 'If provided, it will be used to publish the mutation score in Stryker dashboard'
 
 jobs:
-  lint:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        php-version: ['8.0']
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Use PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
-          tools: composer
-          extensions: ${{ inputs.extra-extensions }}
-          coverage: none
-      - run: composer install --no-interaction --prefer-dist
-      - run: composer cs
-
   static-analysis:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
         php-version: ['8.0']
+        command: ['cs', 'stan']
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -48,7 +31,7 @@ jobs:
           extensions: ${{ inputs.extra-extensions }}
           coverage: none
       - run: composer install --no-interaction --prefer-dist
-      - run: composer stan
+      - run: composer ${{ matrix.command }}
 
   unit-tests:
     runs-on: ubuntu-20.04
