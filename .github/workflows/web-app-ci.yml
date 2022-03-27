@@ -50,9 +50,9 @@ jobs:
       - run: npm run test:ci
       - name: Publish coverage
         if: ${{ inputs.publish-coverage }}
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
         with:
-          file: ./coverage/clover.xml
+          files: ./coverage/clover.xml
 
   mutation-tests:
     runs-on: ubuntu-20.04
