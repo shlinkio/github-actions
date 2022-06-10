@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ inputs.node-version }}
-      - run: npm ci ${{ inputs.force-install && "--force" || "" }}
+      - run: ${{ inputs.force-install && 'npm ci --force' || 'npm ci' }}
       - run: npm run lint
 
   unit-tests:
@@ -51,7 +51,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ inputs.node-version }}
-      - run: npm ci ${{ inputs.force-install && "--force" || "" }}
+      - run: ${{ inputs.force-install && 'npm ci --force' || 'npm ci' }}
       - run: npm run test:ci
       - name: Publish coverage
         if: ${{ inputs.publish-coverage }}
@@ -72,7 +72,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ inputs.node-version }}
-      - run: npm ci ${{ inputs.force-install && "--force" || "" }}
+      - run: ${{ inputs.force-install && 'npm ci --force' || 'npm ci' }}
       - run: npm run mutate -- --mutate=$(git diff origin/${GITHUB_BASE_REF:-main} --name-only | grep -E 'src\/(.*).(ts|tsx)$' | paste -sd ",")
 
   build-docker-image:
