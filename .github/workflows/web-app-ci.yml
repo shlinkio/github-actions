@@ -22,6 +22,11 @@ on:
         required: false
         default: false
         description: 'Tells if code coverage should be published in codecov after running unit tests'
+      force-install:
+        type: boolean
+        required: false
+        default: false
+        description: 'Tells if --force should be passed to npm ci command'
 
 jobs:
   lint:
@@ -33,7 +38,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ inputs.node-version }}
-      - run: npm ci
+      - run: npm ci ${{ inputs.force-install && "--force" || "" }}
       - run: npm run lint
 
   unit-tests:
@@ -46,7 +51,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ inputs.node-version }}
-      - run: npm ci
+      - run: npm ci ${{ inputs.force-install && "--force" || "" }}
       - run: npm run test:ci
       - name: Publish coverage
         if: ${{ inputs.publish-coverage }}
@@ -67,7 +72,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ inputs.node-version }}
-      - run: npm ci
+      - run: npm ci ${{ inputs.force-install && "--force" || "" }}
       - run: npm run mutate -- --mutate=$(git diff origin/${GITHUB_BASE_REF:-main} --name-only | grep -E 'src\/(.*).(ts|tsx)$' | paste -sd ",")
 
   build-docker-image:
