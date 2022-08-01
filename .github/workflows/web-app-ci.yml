@@ -30,7 +30,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -42,7 +42,7 @@ jobs:
       - run: npm run lint
 
   unit-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: ${{ inputs.with-unit-tests }}
     steps:
       - name: Checkout code
@@ -60,7 +60,7 @@ jobs:
           files: ./coverage/clover.xml
 
   mutation-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     continue-on-error: true
     if: ${{ inputs.with-mutation-tests }}
     steps:
@@ -76,7 +76,7 @@ jobs:
       - run: npm run mutate -- --mutate=$(git diff origin/${GITHUB_BASE_REF:-main} --name-only | grep -E 'src\/(.*).(ts|tsx)$' | paste -sd ",")
 
   build-docker-image:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
