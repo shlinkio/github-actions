@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use node.js
         uses: actions/setup-node@v1
         with:
@@ -46,7 +46,7 @@ jobs:
     if: ${{ inputs.with-unit-tests }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use node.js
         uses: actions/setup-node@v1
         with:
@@ -65,7 +65,7 @@ jobs:
     if: ${{ inputs.with-mutation-tests }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0 # needed so that the main branch is also fetched
       - name: Use node.js
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - uses: marceloprado/has-changed-path@v1
         id: changed-dockerfile
         with:
