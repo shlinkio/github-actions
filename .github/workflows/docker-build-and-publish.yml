@@ -3,9 +3,16 @@ name: Build and publish docker image
 on:
   workflow_call:
     inputs:
-      build-and-publish-script:
+      image-name:
         type: string
         required: true
+      version-arg-name:
+        type: string
+        required: true
+      platforms:
+        type: string
+        required: true
+        default: 'linux/arm/v7,linux/arm64/v8,linux/amd64'
 
 jobs:
   build:
@@ -30,6 +37,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
-      - name: Build and publish image
-        run: ${{ inputs.build-and-publish-script }}
+      - name: Resolve tags to publish # TODO
+        id: resolve_tags
+        run: |
+
         shell: bash
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.resolve_tags.outputs.tags }}
+          build-args: ${{ inputs.version-arg-name }}=${{ steps.resolve_tags.outputs.version }}
+          platforms: ${{ inputs.platforms }}
