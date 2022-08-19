@@ -50,7 +50,6 @@ jobs:
           [[ "$GITHUB_REF" == *"develop"* ]] && VERSION="latest" || VERSION=${GITHUB_REF#refs/tags/v} \
           TAGS="${DOCKER_IMAGE}:${VERSION},ghcr.io/${DOCKER_IMAGE}:${VERSION}" \
           if [[ "$GITHUB_REF" != *"develop"* && $GITHUB_REF != *"alpha"* && $GITHUB_REF != *"beta"* ]]; then \
-            # Push stable tag only if this is not an alpha or beta release \
             TAGS="${TAGS},${DOCKER_IMAGE}:stable,ghcr.io/${DOCKER_IMAGE}:stable"; \
           fi; \
           echo "::set-output name=version::$VERSION" \
