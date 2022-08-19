@@ -8,11 +8,11 @@ on:
         required: true
       version-arg-name:
         type: string
-        required: true
+        required: false
         default: 'VERSION'
       platforms:
         type: string
-        required: true
+        required: false
         default: 'linux/arm/v7,linux/arm64/v8,linux/amd64'
 
 jobs:
