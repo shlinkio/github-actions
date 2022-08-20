@@ -47,9 +47,10 @@ jobs:
         id: resolve_tags
         run: |
           DOCKER_IMAGE="${{ inputs.image-name }}"
-          [[ "$GITHUB_REF" == *"develop"* ]] && VERSION="latest" || VERSION="${GITHUB_REF#refs/tags/v}"
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          [[ "$GITHUB_REF" == *"$DEFAULT_BRANCH"* ]] && VERSION="latest" || VERSION="${GITHUB_REF#refs/tags/v}"
           TAGS="${DOCKER_IMAGE}:${VERSION},ghcr.io/${DOCKER_IMAGE}:${VERSION}"
-          [[ "$GITHUB_REF" != *"develop"* && $GITHUB_REF != *"alpha"* && $GITHUB_REF != *"beta"* ]] && TAGS="${TAGS},${DOCKER_IMAGE}:stable,ghcr.io/${DOCKER_IMAGE}:stable"
+          [[ "$GITHUB_REF" != *"$DEFAULT_BRANCH"* && $GITHUB_REF != *"alpha"* && $GITHUB_REF != *"beta"* ]] && TAGS="${TAGS},${DOCKER_IMAGE}:stable,ghcr.io/${DOCKER_IMAGE}:stable"
           echo "::set-output name=version::$VERSION"
           echo "::set-output name=tags::$TAGS"
         shell: bash
