@@ -14,6 +14,13 @@ on:
         type: string
         required: false
         default: 'linux/arm/v7,linux/arm64/v8,linux/amd64'
+      tags-suffix:
+        type: string
+        required: false
+      extra-build-args:
+        type: string
+        required: false
+        default: ''
 
 jobs:
   build:
@@ -49,9 +56,10 @@ jobs:
         run: |
           DOCKER_IMAGE="${{ inputs.image-name }}"
           DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          TAGS_SUFFIX="${{ inputs.tags-suffix && format('-{0}', inputs.tags-suffix) || '' }}"
           [[ "$GITHUB_REF" == *"$DEFAULT_BRANCH"* ]] && VERSION="latest" || VERSION="${GITHUB_REF#refs/tags/v}"
-          TAGS="${DOCKER_IMAGE}:${VERSION},ghcr.io/${DOCKER_IMAGE}:${VERSION}"
-          [[ "$GITHUB_REF" != *"$DEFAULT_BRANCH"* && $GITHUB_REF != *"alpha"* && $GITHUB_REF != *"beta"* ]] && TAGS="${TAGS},${DOCKER_IMAGE}:stable,ghcr.io/${DOCKER_IMAGE}:stable"
+          TAGS="${DOCKER_IMAGE}:${VERSION}${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:${VERSION}${TAGS_SUFFIX}"
+          [[ "$GITHUB_REF" != *"$DEFAULT_BRANCH"* && $GITHUB_REF != *"alpha"* && $GITHUB_REF != *"beta"* ]] && TAGS="${TAGS},${DOCKER_IMAGE}:stable${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:stable${TAGS_SUFFIX}"
           echo "::set-output name=version::$VERSION"
           echo "::set-output name=tags::$TAGS"
         shell: bash
@@ -61,5 +69,7 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.resolve_tags.outputs.tags }}
-          build-args: ${{ inputs.version-arg-name }}=${{ steps.resolve_tags.outputs.version }}
+          build-args: |
+            ${{ inputs.version-arg-name }}=${{ steps.resolve_tags.outputs.version }}
+            ${{ inputs.extra-build-args }}
           platforms: ${{ inputs.platforms }}
