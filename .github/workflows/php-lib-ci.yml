@@ -8,10 +8,6 @@ on:
         required: false
         default: ''
         description: 'Extra PHP Extensions to install, besides the default ones'
-      include-php-eight-two:
-        type: boolean
-        required: false
-        default: false
     secrets:
       INFECTION_BADGE_API_KEY:
         required: false
@@ -22,7 +18,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php-version: ${{ inputs.include-php-eight-two && fromJson('["8.2"]') || fromJson('["8.1"]') }}
+        php-version: ['8.2']
         command: ['cs', 'stan']
     steps:
       - name: Checkout code
@@ -41,7 +37,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php-version: ${{ inputs.include-php-eight-two && fromJson('["8.1", "8.2"]') || fromJson('["8.1"]') }}
+        php-version: ['8.1', '8.2']
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -65,7 +61,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php-version: ${{ inputs.include-php-eight-two && fromJson('["8.1", "8.2"]') || fromJson('["8.1"]') }}
+        php-version: ['8.1', '8.2']
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -91,7 +87,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php-version: ${{ inputs.include-php-eight-two && fromJson('["8.2"]') || fromJson('["8.1"]') }}
+        php-version: ['8.2']
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -116,7 +112,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php-version: ${{ inputs.include-php-eight-two && fromJson('["8.1", "8.2"]') || fromJson('["8.1"]') }}
+        php-version: ['8.1', '8.2']
     steps:
       - uses: geekyeggo/delete-artifact@v1
         with:
