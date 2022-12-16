@@ -30,7 +30,7 @@ jobs:
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
           coverage: none
-      - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.2' && '--ignore-platform-req=php' || '' }}
+      - run: composer install --no-interaction --prefer-dist
       - run: composer ${{ matrix.command }}
 
   unit-tests:
@@ -48,7 +48,7 @@ jobs:
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
           coverage: none
-      - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.2' && '--ignore-platform-req=php' || '' }}
+      - run: composer install --no-interaction --prefer-dist
       - run: composer test:ci
       - uses: actions/upload-artifact@v2
         with:
@@ -72,7 +72,7 @@ jobs:
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
           coverage: none
-      - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.2' && '--ignore-platform-req=php' || '' }}
+      - run: composer install --no-interaction --prefer-dist
       - uses: actions/download-artifact@v2
         with:
           name: build-${{ matrix.php-version }}
