@@ -35,7 +35,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Use node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node-version }}
       - run: ${{ inputs.force-install && 'npm ci --force' || 'npm ci' }}
@@ -48,7 +48,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Use node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node-version }}
       - run: ${{ inputs.force-install && 'npm ci --force' || 'npm ci' }}
@@ -69,7 +69,7 @@ jobs:
         with:
           fetch-depth: 0 # needed so that the main branch is also fetched
       - name: Use node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node-version }}
       - run: ${{ inputs.force-install && 'npm ci --force' || 'npm ci' }}

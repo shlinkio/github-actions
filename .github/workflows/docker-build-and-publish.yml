@@ -60,8 +60,8 @@ jobs:
           [[ "$GITHUB_REF" == *"$DEFAULT_BRANCH"* ]] && VERSION="latest" || VERSION="${GITHUB_REF#refs/tags/v}"
           TAGS="${DOCKER_IMAGE}:${VERSION}${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:${VERSION}${TAGS_SUFFIX}"
           [[ "$GITHUB_REF" != *"$DEFAULT_BRANCH"* && $GITHUB_REF != *"alpha"* && $GITHUB_REF != *"beta"* ]] && TAGS="${TAGS},${DOCKER_IMAGE}:stable${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:stable${TAGS_SUFFIX}"
-          echo "::set-output name=version::$VERSION"
-          echo "::set-output name=tags::$TAGS"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tags=$TAGS" >> $GITHUB_OUTPUT
         shell: bash
       - name: Build and push
         uses: docker/build-push-action@v3
