@@ -11,8 +11,8 @@ on:
       coverage-driver:
         type: string
         required: false
-        default: 'none'
-        description: 'The driver to generate code coverage. Can be "none" or "pcov". Defaults to "none".'
+        default: 'pcov'
+        description: '[Deprecated] This is now ignored, and pcov is always used.'
     secrets:
       INFECTION_BADGE_API_KEY:
         required: false
@@ -52,7 +52,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
-          coverage: ${{ inputs.coverage-driver }}
+          coverage: pcov
       - run: composer install --no-interaction --prefer-dist
       - run: composer test:ci
       - uses: actions/upload-artifact@v2
@@ -76,7 +76,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
-          coverage: ${{ inputs.coverage-driver }}
+          coverage: pcov
       - run: composer install --no-interaction --prefer-dist
       - uses: actions/download-artifact@v2
         with:
@@ -100,7 +100,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          coverage: ${{ inputs.coverage-driver }}
+          coverage: none
       - uses: actions/download-artifact@v2
         with:
           name: build-${{ matrix.php-version }}
