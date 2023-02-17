@@ -7,11 +7,6 @@ on:
         type: string
         required: true
         description: 'NodeJS version to use'
-      with-mutation-tests:
-        type: boolean
-        required: false
-        default: false
-        description: 'Tells if mutation tests should be run'
       with-unit-tests:
         type: boolean
         required: false
@@ -58,22 +53,6 @@ jobs:
         uses: codecov/codecov-action@v2
         with:
           files: ./coverage/clover.xml
-
-  mutation-tests:
-    runs-on: ubuntu-22.04
-    continue-on-error: true
-    if: ${{ inputs.with-mutation-tests }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # needed so that the main branch is also fetched
-      - name: Use node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ inputs.node-version }}
-      - run: ${{ inputs.force-install && 'npm ci --force' || 'npm ci' }}
-      - run: npm run mutate -- --mutate=$(git diff origin/${GITHUB_BASE_REF:-main} --name-only | grep -E 'src\/(.*).(ts|tsx)$' | paste -sd ",")
 
   build-docker-image:
     runs-on: ubuntu-22.04
