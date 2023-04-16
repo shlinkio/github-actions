@@ -78,7 +78,7 @@ jobs:
           extensions: ${{ inputs.extra-extensions }}
           coverage: pcov
       - run: composer install --no-interaction --prefer-dist
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: build-${{ matrix.php-version }}
           path: build
@@ -101,12 +101,12 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           coverage: none
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: build-${{ matrix.php-version }}
           path: build
       - name: Publish coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           files: ./build/clover.xml
 
@@ -115,10 +115,7 @@ jobs:
       - mutation-tests
       - upload-coverage
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        php-version: ['8.1', '8.2']
     steps:
-      - uses: geekyeggo/delete-artifact@v1
+      - uses: geekyeggo/delete-artifact@v2
         with:
-          name: build-${{ matrix.php-version }}
+          name: build-*
