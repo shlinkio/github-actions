@@ -51,18 +51,35 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           repository: ${{ inputs.image-name }}
+
       - name: Resolve tags to publish
         id: resolve_tags
+        shell: bash
         run: |
           DOCKER_IMAGE="${{ inputs.image-name }}"
-          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
           TAGS_SUFFIX="${{ inputs.tags-suffix && format('-{0}', inputs.tags-suffix) || '' }}"
-          [[ "$GITHUB_REF" == *"$DEFAULT_BRANCH"* ]] && VERSION="latest" || VERSION="${GITHUB_REF#refs/tags/v}"
-          TAGS="${DOCKER_IMAGE}:${VERSION}${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:${VERSION}${TAGS_SUFFIX}"
-          [[ "$GITHUB_REF" != *"$DEFAULT_BRANCH"* && $GITHUB_REF != *"alpha"* && $GITHUB_REF != *"beta"* ]] && TAGS="${TAGS},${DOCKER_IMAGE}:stable${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:stable${TAGS_SUFFIX}"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+          # Always build latest
+          TAGS="${DOCKER_IMAGE}:latest${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:latest${TAGS_SUFFIX}"
+          
+          # Build corresponding exact version tag
+          PATCH_VERSION="${GITHUB_REF#refs/tags/v}" # Converts "refs/tags/v4.6.2" into "4.6.2"
+          TAGS="${TAGS},${DOCKER_IMAGE}:${PATCH_VERSION}${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:${PATCH_VERSION}${TAGS_SUFFIX}"
+          
+          # Build stable, minor version and major version tags only if built version does not contain "alpha", "beta" or "rc" keywords
+          if [[ $PATCH_VERSION != *"alpha"* && $PATCH_VERSION != *"beta"*  && $PATCH_VERSION != *"rc"* ]]; then
+            TAGS="${TAGS},${DOCKER_IMAGE}:stable${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:stable${TAGS_SUFFIX}"
+            
+            MINOR_VERSION="${PATCH_VERSION%.*}" # Converts "4.6.2" into "4.6"
+            TAGS="${TAGS},${DOCKER_IMAGE}:${MINOR_VERSION}${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:${MINOR_VERSION}${TAGS_SUFFIX}"
+            
+            MAJOR_VERSION="${MINOR_VERSION%.*}" # Converts "4.6" into "4"
+            TAGS="${TAGS},${DOCKER_IMAGE}:${MAJOR_VERSION}${TAGS_SUFFIX},ghcr.io/${DOCKER_IMAGE}:${MAJOR_VERSION}${TAGS_SUFFIX}"
+          fi
+          
+          echo "version=$PATCH_VERSION" >> $GITHUB_OUTPUT
           echo "tags=$TAGS" >> $GITHUB_OUTPUT
-        shell: bash
+
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
