@@ -6,9 +6,6 @@ on:
       NPM_TOKEN:
         required: true
         description: 'Token used to publish on NPM registry'
-      GITHUB_TOKEN:
-        required: true
-        description: 'Token used to publish GitHub release'
 
 jobs:
   npm-package:
