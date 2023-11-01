@@ -27,7 +27,7 @@ jobs:
         command: ['cs', 'stan']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -45,7 +45,7 @@ jobs:
         php-version: ['8.1', '8.2']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -69,7 +69,7 @@ jobs:
         php-version: ['8.1', '8.2']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -95,7 +95,7 @@ jobs:
         php-version: ['8.2']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use PHP
         uses: shivammathur/setup-php@v2
         with:
