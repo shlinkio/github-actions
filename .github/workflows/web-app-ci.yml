@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        command: ['npm run lint', 'npx tsc --noEmit']
+        command: ['npm run lint', 'npm run types']
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
