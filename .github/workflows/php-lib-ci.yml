@@ -42,7 +42,8 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php-version: ['8.1', '8.2']
+        php-version: ['8.2', '8.3']
+    continue-on-error: ${{ matrix.php-version == '8.3' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,7 +54,7 @@ jobs:
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
           coverage: pcov
-      - run: composer install --no-interaction --prefer-dist
+      - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.3' && '--ignore-platform-req=php' || '' }}
       - run: composer test:ci
       - uses: actions/upload-artifact@v3
         with:
@@ -66,7 +67,8 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php-version: ['8.1', '8.2']
+        php-version: ['8.2', '8.3']
+    continue-on-error: ${{ matrix.php-version == '8.3' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -77,7 +79,7 @@ jobs:
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
           coverage: pcov
-      - run: composer install --no-interaction --prefer-dist
+      - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.3' && '--ignore-platform-req=php' || '' }}
       - uses: actions/download-artifact@v3
         with:
           name: build-${{ matrix.php-version }}
