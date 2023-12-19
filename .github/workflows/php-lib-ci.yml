@@ -56,7 +56,7 @@ jobs:
           coverage: pcov
       - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.3' && '--ignore-platform-req=php' || '' }}
       - run: composer test:ci
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: build-${{ matrix.php-version }}
           path: build
@@ -80,7 +80,7 @@ jobs:
           extensions: ${{ inputs.extra-extensions }}
           coverage: pcov
       - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.3' && '--ignore-platform-req=php' || '' }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: build-${{ matrix.php-version }}
           path: build
@@ -103,7 +103,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           coverage: none
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: build-${{ matrix.php-version }}
           path: build
