@@ -8,11 +8,11 @@ on:
         required: false
         default: ''
         description: 'Extra PHP Extensions to install, besides the default ones'
-      coverage-driver:
-        type: string
+      mutation-tests:
+        type: boolean
         required: false
-        default: 'pcov'
-        description: '[Deprecated] This is now ignored, and pcov is always used.'
+        default: true
+        description: 'Enables execution of mutation tests when value is true. Defaults to true'
     secrets:
       INFECTION_BADGE_API_KEY:
         required: false
@@ -54,7 +54,7 @@ jobs:
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
           coverage: pcov
-      - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.3' && '--ignore-platform-req=php' || '' }}
+      - run: composer install --no-interaction --prefer-dist
       - run: composer test:ci
       - uses: actions/upload-artifact@v4
         with:
@@ -62,6 +62,7 @@ jobs:
           path: build
 
   mutation-tests:
+    if: ${{ inputs.mutation-tests }}
     needs:
       - unit-tests
     runs-on: ubuntu-22.04
@@ -79,7 +80,7 @@ jobs:
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
           coverage: pcov
-      - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.3' && '--ignore-platform-req=php' || '' }}
+      - run: composer install --no-interaction --prefer-dist
       - uses: actions/download-artifact@v4
         with:
           name: build-${{ matrix.php-version }}
@@ -108,7 +109,7 @@ jobs:
           name: build-${{ matrix.php-version }}
           path: build
       - name: Publish coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ./build/clover.xml
 
