@@ -8,6 +8,11 @@ on:
         required: false
         default: ''
         description: 'Extra PHP Extensions to install, besides the default ones'
+      tests:
+        type: boolean
+        required: false
+        default: true
+        description: 'Enables execution of unit tests when value is true. Defaults to true'
       mutation-tests:
         type: boolean
         required: false
@@ -39,6 +44,7 @@ jobs:
       - run: composer ${{ matrix.command }}
 
   unit-tests:
+    if: ${{ inputs.tests }}
     runs-on: ubuntu-22.04
     strategy:
       matrix:
