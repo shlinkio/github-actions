@@ -17,11 +17,11 @@ on:
         type: boolean
         required: false
         default: true
-        description: 'Enables execution of mutation tests when value is true. Defaults to true'
+        description: '[DEPRECATED] This is no longer used'
     secrets:
       INFECTION_BADGE_API_KEY:
         required: false
-        description: 'If provided, it will be used to publish the mutation score in Stryker dashboard'
+        description: '[DEPRECATED] This is no longer used'
 
 jobs:
   static-analysis:
@@ -66,33 +66,6 @@ jobs:
           name: build-${{ matrix.php-version }}
           path: build
 
-  mutation-tests:
-    if: ${{ inputs.mutation-tests }}
-    needs:
-      - unit-tests
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        php-version: ['8.2', '8.3']
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Use PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
-          tools: composer
-          extensions: ${{ inputs.extra-extensions }}
-          coverage: pcov
-      - run: composer install --no-interaction --prefer-dist
-      - uses: actions/download-artifact@v4
-        with:
-          name: build-${{ matrix.php-version }}
-          path: build
-      - run: composer infect:ci
-        env:
-          INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
-
   upload-coverage:
     needs:
       - unit-tests
@@ -119,7 +92,6 @@ jobs:
 
   delete-artifacts:
     needs:
-      - mutation-tests
       - upload-coverage
     runs-on: ubuntu-22.04
     steps:
