@@ -1,5 +1,7 @@
 name: Build and publish docker image
 
+# FIXME: Deprecated. Use docker-publish-image.yml workflow instead
+
 on:
   workflow_call:
     inputs:
