@@ -1,0 +1,79 @@
+name: Publish docker image
+
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        type: string
+        required: true
+      version-arg-name:
+        type: string
+        required: false
+        default: 'VERSION'
+      platforms:
+        type: string
+        required: false
+        default: 'linux/arm/v7,linux/arm64/v8,linux/amd64'
+      tags-suffix:
+        type: string
+        required: false
+      extra-build-args:
+        type: string
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: latest
+      - name: Login to docker hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Login to GitHub container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_PAT }}
+      - name: Resolve meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ inputs.image-name }}
+            ghcr.io/${{ inputs.image-name }}
+          flavor: |
+            latest=true
+            suffix=${{ inputs.tags-suffix && format('-{0}', inputs.tags-suffix) || '' }},onlatest=true
+          tags: |
+            type=raw,value=stable,enable=${{ !contains(github.ref, 'alpha') && !contains(github.ref, 'beta') && !contains(github.ref, 'rc') }}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ inputs.version-arg-name }}=${{ steps.meta.outputs.version }}
+            ${{ inputs.extra-build-args }}
+          platforms: ${{ inputs.platforms }}
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          repository: ${{ inputs.image-name }}
