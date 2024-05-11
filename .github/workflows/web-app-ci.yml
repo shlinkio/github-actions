@@ -59,14 +59,17 @@ jobs:
 
   build-docker-image:
     runs-on: ubuntu-22.04
+    # Skip if dockerfile does not exist
+    if: ${{ hashFiles('./Dockerfile') != '' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - uses: marceloprado/has-changed-path@v1
+      - uses: tj-actions/verify-changed-files@v20
         id: changed-dockerfile
         with:
-          paths: ./Dockerfile
-      - if: ${{ steps.changed-dockerfile.outputs.changed == 'true' }}
+          files: |
+            ./Dockerfile
+      - if: ${{ steps.changed-dockerfile.outputs.files_changed == 'true' }}
         run: docker build -t shlink-website:test .
-      - if: ${{ steps.changed-dockerfile.outputs.changed != 'true' }}
+      - if: ${{ steps.changed-dockerfile.outputs.files_changed != 'true' }}
         run: echo "Dockerfile didn't change. Skipped"
