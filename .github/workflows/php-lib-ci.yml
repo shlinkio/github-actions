@@ -60,7 +60,7 @@ jobs:
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
           coverage: pcov
-      - run: composer install --no-interaction --prefer-dist
+      - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.4' && '--ignore-platform-req=php' || '' }}
       - run: composer test:ci
       - uses: actions/upload-artifact@v4
         if: ${{ matrix.php-version == '8.3' }}
