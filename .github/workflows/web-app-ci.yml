@@ -25,7 +25,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         command: ['npm run lint', 'npm run types']
@@ -40,7 +40,7 @@ jobs:
       - run: ${{ matrix.command }}
 
   unit-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: ${{ inputs.with-unit-tests }}
     steps:
       - name: Checkout code
@@ -58,7 +58,7 @@ jobs:
           files: ./coverage/clover.xml
 
   build-docker-image:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

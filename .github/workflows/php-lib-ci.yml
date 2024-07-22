@@ -25,10 +25,10 @@ on:
 
 jobs:
   static-analysis:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
-        php-version: ['8.2']
+        php-version: ['8.3']
         command: ['cs', 'stan']
     steps:
       - name: Checkout code
@@ -45,10 +45,11 @@ jobs:
 
   unit-tests:
     if: ${{ inputs.tests }}
-    runs-on: ubuntu-22.04
+    continue-on-error: ${{ matrix.php-version == '8.4' }}
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
-        php-version: ['8.2', '8.3']
+        php-version: ['8.2', '8.3', '8.4']
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -62,6 +63,7 @@ jobs:
       - run: composer install --no-interaction --prefer-dist
       - run: composer test:ci
       - uses: actions/upload-artifact@v4
+        if: ${{ matrix.php-version == '8.3' }}
         with:
           name: build-${{ matrix.php-version }}
           path: build
@@ -69,10 +71,10 @@ jobs:
   upload-coverage:
     needs:
       - unit-tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
-        php-version: ['8.2']
+        php-version: ['8.3']
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -93,8 +95,8 @@ jobs:
   delete-artifacts:
     needs:
       - upload-coverage
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v5
         with:
           name: build-*
