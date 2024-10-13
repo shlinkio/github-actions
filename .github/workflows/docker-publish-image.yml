@@ -45,6 +45,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
+      - name: Resolve suffix
+        description: 'If a suffix was provided, prepend a dash to it'
+        id: resolve_suffix
+        run: echo "suffix=$(echo ${{ inputs.tags-suffix && format('-{0}', inputs.tags-suffix) || '' }})" >> $GITHUB_OUTPUT
       - name: Resolve meta
         id: meta
         uses: docker/metadata-action@v5
@@ -54,12 +58,16 @@ jobs:
             ghcr.io/${{ inputs.image-name }}
           flavor: |
             latest=true
-            suffix=${{ inputs.tags-suffix && format('-{0}', inputs.tags-suffix) || '' }},onlatest=true
+            suffix=${{ steps.resolve_suffix.outputs.suffix }},onlatest=true
           tags: |
             type=raw,value=stable,enable=${{ !contains(github.ref, 'alpha') && !contains(github.ref, 'beta') && !contains(github.ref, 'rc') }}
             type=semver,pattern={{major}}.{{minor}}.{{patch}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+      - name: Extract version
+        description: 'Generate a version constraint that does not include the suffix'
+        id: extract_version
+        run: echo "version=$(echo ${{ steps.meta.outputs.version }} | sed 's/${{ steps.resolve_suffix.outputs.suffix }}$//')" >> $GITHUB_OUTPUT
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -68,7 +76,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            ${{ inputs.version-arg-name }}=${{ steps.meta.outputs.version }}
+            ${{ inputs.version-arg-name }}=${{ steps.extract_version.outputs.version }}
             ${{ inputs.extra-build-args }}
           platforms: ${{ inputs.platforms }}
       - name: Update Docker Hub description
