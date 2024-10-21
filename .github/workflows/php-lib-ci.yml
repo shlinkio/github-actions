@@ -13,6 +13,11 @@ on:
         required: false
         default: true
         description: 'Enables execution of unit tests when value is true. Defaults to true'
+      coverage-driver:
+        type: string
+        required: false
+        default: 'pcov'
+        description: 'The coverage driver to use when tests are run. Can be xdebug or pcov. Defaults to pcov'
 
 jobs:
   static-analysis:
@@ -49,7 +54,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
-          coverage: pcov
+          coverage: ${{ inputs.coverage-driver }}
       - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.4' && '--ignore-platform-req=php' || '' }}
       - run: composer test:ci
       - uses: actions/upload-artifact@v4
