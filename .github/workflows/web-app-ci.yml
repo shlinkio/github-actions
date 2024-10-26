@@ -56,18 +56,3 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage/clover.xml
-
-  build-docker-image:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - uses: tj-actions/verify-changed-files@v20
-        id: changed-dockerfile
-        with:
-          files: |
-            ./Dockerfile
-      - if: ${{ steps.changed-dockerfile.outputs.files_changed == 'true' }}
-        run: docker build -t shlink-website:test .
-      - if: ${{ steps.changed-dockerfile.outputs.files_changed != 'true' }}
-        run: echo "Dockerfile didn't change. Skipped"
