@@ -4,6 +4,7 @@ Internal Github workflows and actions for Shlink repositories.
 
 ## Reusable workflows:
 
+* `docker-publish-build-ci`: Build a docker image for pure testing purpose. Intended to use during CI if the Dockerfile changed.
 * `docker-publish-image`: Publish multi-arch docker images in docker hub and GHCR.
 * `docker-migrate-registry`: Migrate docker images from public registry to GHCR.
 * `js-lib-ci`: Continuous integration for JS libraries.

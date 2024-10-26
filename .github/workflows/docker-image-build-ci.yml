@@ -1,0 +1,13 @@
+name: Test docker image build
+
+on:
+  workflow_call: null
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Test docker image build
+        run: docker build -t shlink-docker-image:temp .
