@@ -60,7 +60,7 @@ jobs:
         if: ${{ matrix.php-version == '8.3' }}
         with:
           path: build
-          key: build-${{ matrix.php-version }}
+          key: build-${{ matrix.php-version }}-${{ github.run_id }}
 
   upload-coverage:
     needs:
@@ -79,7 +79,7 @@ jobs:
           coverage: none
       - uses: actions/cache/restore@v4
         with:
-          key: build-${{ matrix.php-version }}
+          key: build-${{ matrix.php-version }}-${{ github.run_id }}
           path: build
       - name: Publish coverage
         uses: codecov/codecov-action@v4
