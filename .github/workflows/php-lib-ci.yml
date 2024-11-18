@@ -54,7 +54,7 @@ jobs:
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
           coverage: xdebug
-      - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.4' && '--ignore-platform-req=php' || '' }}
+      - run: composer install --no-interaction --prefer-dist
       - run: composer test:ci
       - uses: actions/cache/save@v4
         if: ${{ matrix.php-version == '8.3' }}
