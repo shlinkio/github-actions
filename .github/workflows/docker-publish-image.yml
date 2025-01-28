@@ -21,6 +21,10 @@ on:
         type: string
         required: false
         default: ''
+      buildx-version:
+        type: string
+        required: false
+        default: 'latest'
 
 jobs:
   build:
@@ -33,7 +37,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          version: v0.19.2 # Using v0.20 there are errors when building ARM images
+          version: ${{ inputs.buildx-version }}
       - name: Login to docker hub
         uses: docker/login-action@v3
         with:
