@@ -1,7 +1,12 @@
 name: Test docker image build
 
 on:
-  workflow_call: null
+  workflow_call:
+    inputs:
+      platforms:
+        type: string
+        required: false
+        default: 'linux/amd64'
 
 jobs:
   build-docker-image:
@@ -9,5 +14,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          # setup-qemu-action uses `tonistiigi/binfmt:latest` by default, which causes errors when building for ARM.
+          # Pinning to a fixed version to work around it.
+          # See https://github.com/docker/setup-qemu-action/issues/188#issuecomment-2604322104
+          image: tonistiigi/binfmt:qemu-v8.1.5
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - name: Test docker image build
-        run: docker build -t shlink-docker-image:temp .
+        run: docker buildx build --platform ${{ inputs.platforms }} --tag shlink-docker-image:temp .
