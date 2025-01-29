@@ -34,6 +34,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+        with:
+          # setup-qemu-action uses `tonistiigi/binfmt:latest` by default, which causes errors when building for ARM.
+          # Pinning to a fixed version to work around it.
+          # See https://github.com/docker/setup-qemu-action/issues/188#issuecomment-2604322104
+          image: tonistiigi/binfmt:qemu-v8.1.5
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
