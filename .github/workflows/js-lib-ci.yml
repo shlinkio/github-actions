@@ -1,7 +1,13 @@
 name: Continuous integration - JS lib
 
 on:
-  workflow_call: null
+  workflow_call:
+    inputs:
+      install-playwright:
+        type: boolean
+        required: false
+        default: false
+        description: 'Whether playwright dependencies should be installed before running tests. Defaults to false'
 
 jobs:
   static-checks:
@@ -29,6 +35,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
+      - run: npx playwright install
+        if: ${{ inputs.install-playwright }}
       - run: npm run test:ci
       - uses: codecov/codecov-action@v4
         with:
