@@ -22,6 +22,11 @@ on:
         required: false
         default: false
         description: 'Tells if --force should be passed to npm ci command'
+      install-playwright:
+        type: boolean
+        required: false
+        default: false
+        description: 'Whether playwright dependencies should be installed before running tests. Defaults to false'
 
 jobs:
   lint:
@@ -50,6 +55,8 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
       - run: ${{ inputs.force-install && 'npm ci --force' || 'npm ci' }}
+      - run: npx playwright install
+        if: ${{ inputs.install-playwright }}
       - run: npm run test:ci
       - name: Publish coverage
         if: ${{ inputs.publish-coverage }}
