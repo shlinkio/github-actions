@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - run: npx playwright install
+      - run: npx playwright install chromium
         if: ${{ inputs.install-playwright }}
       - run: npm run test:ci
       - uses: codecov/codecov-action@v4

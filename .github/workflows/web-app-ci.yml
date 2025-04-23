@@ -55,7 +55,7 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
       - run: ${{ inputs.force-install && 'npm ci --force' || 'npm ci' }}
-      - run: npx playwright install
+      - run: npx playwright install chromium
         if: ${{ inputs.install-playwright }}
       - run: npm run test:ci
       - name: Publish coverage
