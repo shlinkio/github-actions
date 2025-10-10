@@ -2,10 +2,6 @@ name: Publish release - JS lib
 
 on:
   workflow_call:
-    secrets:
-      NPM_TOKEN:
-        required: false
-        description: 'DEPRECATED. This secret is now ignored'
 
 permissions:
   id-token: write # Required for trusted publishing
