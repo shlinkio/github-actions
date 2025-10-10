@@ -4,8 +4,13 @@ on:
   workflow_call:
     secrets:
       NPM_TOKEN:
-        required: true
-        description: 'Token used to publish on NPM registry'
+        required: false
+        description: 'DEPRECATED. This secret is now ignored'
+
+# Required for trusted publishing
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   npm-package:
@@ -14,14 +19,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
       - run: npm version ${GITHUB_REF#refs/tags/v} --git-tag-version=false
       - run: npm run build
       - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   github-release:
     needs: ['npm-package']
