@@ -44,7 +44,6 @@ jobs:
     strategy:
       matrix:
         php-version: ['8.3', '8.4', '8.5']
-    continue-on-error: ${{ matrix.php-version == '8.5' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,7 +54,7 @@ jobs:
           tools: composer
           extensions: ${{ inputs.extra-extensions }}
           coverage: xdebug
-      - run: composer install --no-interaction --prefer-dist ${{ matrix.php-version == '8.5' && '--ignore-platform-req=php' || '' }}
+      - run: composer install --no-interaction --prefer-dist
       - run: composer test:ci
       - uses: actions/cache/save@v4
         if: ${{ matrix.php-version == '8.3' }}
