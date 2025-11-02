@@ -17,8 +17,8 @@ jobs:
         node-version: ['22.x']
         task: ['lint', 'types', 'build']
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
@@ -30,14 +30,14 @@ jobs:
       matrix:
         node-version: ['22.x', '24.x', '25.x']
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npx playwright install chromium
         if: ${{ inputs.install-playwright }}
       - run: npm run test:ci
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           files: ./coverage/clover.xml

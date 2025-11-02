@@ -27,7 +27,7 @@ jobs:
         command: ['cs', 'stan']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Use PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -46,7 +46,7 @@ jobs:
         php-version: ['8.3', '8.4', '8.5']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Use PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -71,7 +71,7 @@ jobs:
         php-version: ['8.3']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Use PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -82,6 +82,6 @@ jobs:
           key: build-${{ matrix.php-version }}-${{ github.run_id }}
           path: build
       - name: Publish coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: ./build/clover.xml
