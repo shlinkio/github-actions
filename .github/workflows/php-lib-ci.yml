@@ -13,10 +13,6 @@ on:
         required: false
         default: true
         description: 'Enables execution of unit tests when value is true. Defaults to true'
-      coverage-driver:
-        type: string
-        required: false
-        description: '[Deprecated] This input is now ignored'
 
 jobs:
   static-analysis:
