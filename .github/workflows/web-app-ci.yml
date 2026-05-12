@@ -36,7 +36,7 @@ jobs:
         command: ['npm run lint', 'npm run types']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Use node.js
         uses: actions/setup-node@v6
         with:
@@ -49,7 +49,7 @@ jobs:
     if: ${{ inputs.with-unit-tests }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Use node.js
         uses: actions/setup-node@v6
         with:
